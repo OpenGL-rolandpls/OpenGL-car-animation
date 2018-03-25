@@ -270,6 +270,12 @@ def display():
 	x_road2 = (x_road2 - 0.5)
 	if(x_road2 == -80):
 		x_road2 = 80
+	x_sidewalk1 = (x_sidewalk1 - 0.5)
+	if(x_sidewalk1 == -100):
+		x_sidewalk1 = 0
+	x_sidewalk2 = (x_sidewalk2 - 0.5)
+	if(x_sidewalk2 == -50):
+		x_sidewalk2 = 50
 	glutPostRedisplay()
 
 def refresh2d(width, height):
