@@ -10,12 +10,34 @@ x_road2 = 80
 x_sidewalk1 = 0
 x_sidewalk2 = 50
 
+skyColorR = 109/255
+skyColorG = 238/255
+skyColorB = 255/255
+
+skyDarkR = 13/255
+skyDarkG = 13/255
+skyDarkB = 73/255
+
+plus = False
+
+dR = (- skyDarkR + skyColorR)/500
+dG = (- skyDarkG + skyColorG)/500
+dB = (- skyDarkB + skyColorB)/500
+
+skyR = 109/255
+skyG = 238/255
+skyB = 255/255
+
 # The display() method does all the work; it has to call the appropriate
 # OpenGL functions to actually display something.
 def display():
 	global x_road1
 	global x_road2
-
+	global skyColorR, skyColorG, skyColorB
+	global skyR, skyG, skyB
+	global skyDarkR, skyDarkG, skyDarkB
+	global dR, dG, dB
+	global plus
 	global x_sidewalk1
 	global x_sidewalk2
 	
@@ -25,7 +47,7 @@ def display():
 	
 	# ... render stuff in here ...
 	# background
-	glColor3f(109/255,238/255,255/255)
+	glColor3f(skyR, skyG, skyB)
 	glBegin(GL_POLYGON)
 	glVertex2f(0,0)
 	glVertex2f(800,0)
@@ -230,6 +252,18 @@ def display():
 	# Copy the off-screen buffer to the screen.
 	glutSwapBuffers()
 	
+	if(skyR < skyColorR) and (plus):
+		skyR = skyR + dR
+		skyG = skyG + dG
+		skyB = skyB + dB
+		if (skyR == skyColorR):
+			plus = False
+	else:
+		skyR = skyR - dR
+		skyG = skyG - dG
+		skyB = skyB - dB
+		if (skyR < skyDarkR):
+			plus = True
 	x_road1 = (x_road1 + 0.5)%80
 	x_road2 = (x_road2 + 0.5)%160
 	
