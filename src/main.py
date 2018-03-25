@@ -90,7 +90,7 @@ def display():
 
 	x1 = x_sidewalk1
 	x2 = x_sidewalk2
-	for i in range(0,20):
+	for i in range(0,10):
 		glColor3f(1,1,1)
 		glBegin(GL_POLYGON)
 		glVertex2f(x1,200)
