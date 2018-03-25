@@ -42,11 +42,11 @@ void main()
 }
 """
 
-fragment_shader = """
+fragment_shader_road = """
 #version 330
 void main()
 {
-   gl_FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);
+   gl_FragColor = vec4(0.24f, 0.24f, 0.24f, 1.0f);
 }
 """
 
@@ -61,10 +61,21 @@ void main()
 }
 """
 
+def fx(x):
+    return (1 - (2 - 2*x/800))
+
+def fy(y):
+    return (1 - (2 - 2*y/600))
+
 background = [-1.0, 1.0, 0.0, 1.0,
               1.0, 1.0, 0.0, 1.0,
               1.0, -1.0, 0.0, 1.0,
               -1.0, -1.0, 0.0, 1.0]
+
+road = [0.0, 200.0, 0.0, 1.0,
+        800.0, 200.0, 0.0, 1.0,
+        800.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 0.0, 1.0]
 
 vertices = [ 1,  1, 0.0, 1.0,
             0.0,  0.6, 0.0, 1.0,
@@ -77,6 +88,15 @@ vertices2 = [ 0.0,  0.6, 0.0, 1.0,
 background = numpy.array(background, dtype=numpy.float32)			 
 vertices = numpy.array(vertices, dtype=numpy.float32)
 vertices2 = numpy.array(vertices2, dtype=numpy.float32)
+
+def convert_coordinate():
+    global road
+    for i in range(0, len(road), 4):
+        road[i] = fx(road[i])
+        road[i+1] = fy(road[i+1])
+    print(road)
+    road = numpy.array(road, dtype=numpy.float32)
+    
 
 def create_object(shader, datas):
     
@@ -117,18 +137,16 @@ def display(shader, vertex_array_object):
 
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
+    # road
     GL.glUseProgram(shader[0])
-    
-    transLoc = GL.glGetUniformLocation(shader[0], "transform")
-    GL.glUniform1f(transLoc, transform)
-    transform += 0.0001
-
     GL.glBindVertexArray( vertex_array_object[0] )
-    GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
     GL.glBindVertexArray( 0 )
     GL.glUseProgram(0)
 
+    # sky
     GL.glUseProgram(shader[1])
+
     redLoc = GL.glGetUniformLocation(shader[1], "r")
     greenLoc = GL.glGetUniformLocation(shader[1], "g")
     blueLoc = GL.glGetUniformLocation(shader[1], "b")
@@ -162,14 +180,15 @@ def main():
     global vertices2
     global vertices 
 
+    convert_coordinate()
     pygame.init()
     screen = pygame.display.set_mode((800, 600), pygame.OPENGL|pygame.DOUBLEBUF)
     GL.glClearColor(0.5, 0.5, 0.5, 1.0)
     GL.glEnable(GL.GL_DEPTH_TEST)
 
-    shader = OpenGL.GL.shaders.compileProgram(
+    shader_road = OpenGL.GL.shaders.compileProgram(
         OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
-        OpenGL.GL.shaders.compileShader(fragment_shader, GL.GL_FRAGMENT_SHADER)
+        OpenGL.GL.shaders.compileShader(fragment_shader_road, GL.GL_FRAGMENT_SHADER)
     )
 
     shader_sky = OpenGL.GL.shaders.compileProgram(
@@ -177,14 +196,14 @@ def main():
         OpenGL.GL.shaders.compileShader(fragment_shader_sky, GL.GL_FRAGMENT_SHADER)
     )
     shaders = []
-    shaders.append(shader)
+    shaders.append(shader_road)
     shaders.append(shader_sky)
     
     clock = pygame.time.Clock()
     
     while True:
         vertex_array_object = []
-        vertex_array_object.append(create_object(shader, vertices))
+        vertex_array_object.append(create_object(shader_road, road))
         vertex_array_object.append(create_object(shader_sky, background))     
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
