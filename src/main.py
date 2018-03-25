@@ -1,4 +1,5 @@
 import sys
+from math import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -9,12 +10,34 @@ x_road2 = 80
 x_sidewalk1 = 0
 x_sidewalk2 = 50
 
+skyColorR = 109/255
+skyColorG = 238/255
+skyColorB = 255/255
+
+skyDarkR = 13/255
+skyDarkG = 13/255
+skyDarkB = 73/255
+
+plus = False
+
+dR = (- skyDarkR + skyColorR)/500
+dG = (- skyDarkG + skyColorG)/500
+dB = (- skyDarkB + skyColorB)/500
+
+skyR = 109/255
+skyG = 238/255
+skyB = 255/255
+
 # The display() method does all the work; it has to call the appropriate
 # OpenGL functions to actually display something.
 def display():
 	global x_road1
 	global x_road2
-
+	global skyColorR, skyColorG, skyColorB
+	global skyR, skyG, skyB
+	global skyDarkR, skyDarkG, skyDarkB
+	global dR, dG, dB
+	global plus
 	global x_sidewalk1
 	global x_sidewalk2
 	
@@ -24,7 +47,7 @@ def display():
 	
 	# ... render stuff in here ...
 	# background
-	glColor3f(109/255,238/255,255/255)
+	glColor3f(skyR, skyG, skyB)
 	glBegin(GL_POLYGON)
 	glVertex2f(0,0)
 	glVertex2f(800,0)
@@ -94,9 +117,153 @@ def display():
 	glVertex2f(510,180)
 	glVertex2f(350,180)
 	glEnd()
+	
+	glColor3f(0/255,198/255,255/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(74,320)
+	glVertex2f(63,270)
+	glVertex2f(90,270)
+	glVertex2f(90,320)
+	glEnd()
+	
+	glColor3f(0/255,198/255,255/255)
+	glBegin(GL_QUADS)
+	glVertex2f(76,320)
+	glVertex2f(65,270)
+	glVertex2f(92,270)
+	glVertex2f(103,320)
+	
+	glVertex2f(110,320)
+	glVertex2f(99,270)
+	glVertex2f(205,270)
+	glVertex2f(210,320)
+	
+	glVertex2f(215,320)
+	glVertex2f(220,270)
+	glVertex2f(321,270)
+	glVertex2f(310,320)
+	
+	glVertex2f(320,320)
+	glVertex2f(331,270)
+	glVertex2f(390,270)
+	glVertex2f(350,320)
+	glEnd()
+	
+	glColor3f(15/255,15/255,15/255)
+	glBegin(GL_QUADS)
+	glVertex2f(100,220)
+	glVertex2f(100,200)
+	glVertex2f(520,200)
+	glVertex2f(510,220)
+	glEnd()
+	
+	#wheel-1 
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 40 * cos(i*2*pi/32) + 150
+		sine = 40 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 30 * cos(i*2*pi/32) + 150
+		sine = 30 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)
+	glBegin(GL_QUADS)
+	glVertex2f(115,193)
+	glVertex2f(115,187)
+	glVertex2f(185,187)
+	glVertex2f(185,193)
+
+	glVertex2f(147,225)
+	glVertex2f(147,155)
+	glVertex2f(153,155)
+	glVertex2f(153,225)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 20 * cos(i*2*pi/32) + 150
+		sine = 20 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 15 * cos(i*2*pi/32) + 150
+		sine = 15 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	#wheel-2
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 40 * cos(i*2*pi/32) + 380
+		sine = 40 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 30 * cos(i*2*pi/32) + 380
+		sine = 30 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)
+	glBegin(GL_QUADS)
+	glVertex2f(345,193)
+	glVertex2f(345,187)
+	glVertex2f(415,187)
+	glVertex2f(415,193)
+
+	glVertex2f(377,225)
+	glVertex2f(377,155)
+	glVertex2f(383,155)
+	glVertex2f(383,225)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 20 * cos(i*2*pi/32) + 380
+		sine = 20 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 15 * cos(i*2*pi/32) + 380
+		sine = 15 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
 	# Copy the off-screen buffer to the screen.
 	glutSwapBuffers()
 	
+	if(skyR < skyColorR) and (plus):
+		skyR = skyR + dR
+		skyG = skyG + dG
+		skyB = skyB + dB
+		if (skyR == skyColorR):
+			plus = False
+	else:
+		skyR = skyR - dR
+		skyG = skyG - dG
+		skyB = skyB - dB
+		if (skyR < skyDarkR):
+			plus = True
 	x_road1 = (x_road1 + 0.5)%80
 	x_road2 = (x_road2 + 0.5)%160
 	
