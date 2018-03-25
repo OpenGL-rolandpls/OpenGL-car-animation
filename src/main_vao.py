@@ -1,15 +1,27 @@
 import OpenGL.GL as GL
+import glm
 import OpenGL.GL.shaders
+from OpenGL.GLU import *
+from OpenGL.GLUT import *
 import ctypes
 import pygame
 import numpy
 
+transform = 0.0
+
 vertex_shader = """
 #version 330
-in vec4 position;
+
+layout (location = 0) in vec4 position;
+layout (location = 1) in vec2 aTexCoord;
+uniform float transform;
+out vec2 TexCoord;
+
 void main()
 {
-   gl_Position = position;
+   
+   gl_Position = vec4(position.x + transform, position.y, 0.0, 1.0);
+   TexCoord = vec2(aTexCoord.x, aTexCoord.y);
 }
 """
 
@@ -26,6 +38,7 @@ fragment_shader2 = """
 void main()
 {
    gl_FragColor = vec4(0.0f, 0.0f, 0.0f, 0.0f);
+    
 }
 """
 
@@ -41,6 +54,7 @@ vertices = numpy.array(vertices, dtype=numpy.float32)
 vertices2 = numpy.array(vertices2, dtype=numpy.float32)
 
 def create_object(shader, datas):
+    
     # Create a new VAO (Vertex Array Object) and bind it
     vertex_array_object = GL.glGenVertexArrays(1)
     GL.glBindVertexArray( vertex_array_object )
@@ -70,8 +84,16 @@ def create_object(shader, datas):
     return vertex_array_object
     
 def display(shader, vertex_array_object):
+    global transform
+
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+
     GL.glUseProgram(shader[0])
+    
+    transLoc = GL.glGetUniformLocation(shader[0], "transform")
+    GL.glUniform1f(transLoc, transform)
+    transform += 0.0001
+
     GL.glBindVertexArray( vertex_array_object[0] )
     GL.glDrawArrays(GL.GL_TRIANGLES, 0, 3)
     GL.glBindVertexArray( 0 )
@@ -85,6 +107,9 @@ def display(shader, vertex_array_object):
     
 
 def main():
+    global vertices2
+    global vertices 
+
     pygame.init()
     screen = pygame.display.set_mode((512, 512), pygame.OPENGL|pygame.DOUBLEBUF)
     GL.glClearColor(0.5, 0.5, 0.5, 1.0)
@@ -102,12 +127,13 @@ def main():
     shaders = []
     shaders.append(shader)
     shaders.append(shader2)
-    vertex_array_object = []
-    vertex_array_object.append(create_object(shader, vertices))
-    vertex_array_object.append(create_object(shader2, vertices2))
+    
     clock = pygame.time.Clock()
     
-    while True:     
+    while True:
+        vertex_array_object = []
+        vertex_array_object.append(create_object(shader, vertices))
+        vertex_array_object.append(create_object(shader2, vertices2))     
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
@@ -115,6 +141,10 @@ def main():
                 return
         
         display(shaders, vertex_array_object)
+        # vertices[0] += 0.001
+        # vertices2[4] -= 0.001
+        
+
         pygame.display.flip()
 
 if __name__ == '__main__':
