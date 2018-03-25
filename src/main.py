@@ -152,6 +152,19 @@ def display():
 		glVertex2f(cosine,sine)
 	glEnd()
 	
+	glColor3f(65/255,65/255,65/255)
+	glBegin(GL_QUADS)
+	glVertex2f(115,193)
+	glVertex2f(115,187)
+	glVertex2f(185,187)
+	glVertex2f(185,193)
+
+	glVertex2f(147,225)
+	glVertex2f(147,155)
+	glVertex2f(153,155)
+	glVertex2f(153,225)
+	glEnd()
+	
 	glColor3f(65/255,65/255,65/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
@@ -183,6 +196,19 @@ def display():
 		cosine = 30 * cos(i*2*pi/32) + 380
 		sine = 30 * sin(i*2*pi/32) + 190
 		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)
+	glBegin(GL_QUADS)
+	glVertex2f(345,193)
+	glVertex2f(345,187)
+	glVertex2f(415,187)
+	glVertex2f(415,193)
+
+	glVertex2f(377,225)
+	glVertex2f(377,155)
+	glVertex2f(383,155)
+	glVertex2f(383,225)
 	glEnd()
 	
 	glColor3f(65/255,65/255,65/255)	
