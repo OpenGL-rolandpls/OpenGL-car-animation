@@ -20,14 +20,15 @@ skyDarkB = 73/255
 
 plus = False
 
-dR = (- skyDarkR + skyColorR)/500
-dG = (- skyDarkG + skyColorG)/500
-dB = (- skyDarkB + skyColorB)/500
+dR = (- skyDarkR + skyColorR)/1500
+dG = (- skyDarkG + skyColorG)/1500
+dB = (- skyDarkB + skyColorB)/1500
 
 skyR = 109/255
 skyG = 238/255
 skyB = 255/255
 
+wheel = 0
 # The display() method does all the work; it has to call the appropriate
 # OpenGL functions to actually display something.
 def display():
@@ -40,6 +41,7 @@ def display():
 	global plus
 	global x_sidewalk1
 	global x_sidewalk2
+	global wheel
 	
 	# Clear the color and depth buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -158,96 +160,104 @@ def display():
 	glEnd()
 	
 	#wheel-1 
+	glPushMatrix()
+	glTranslate(150,190,0)
+	glRotated(wheel,0,0,1)
 	glColor3f(65/255,65/255,65/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 40 * cos(i*2*pi/32) + 150
-		sine = 40 * sin(i*2*pi/32) + 190
+		cosine = 40 * cos(i*2*pi/32)
+		sine = 40 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
 	
 	glColor3f(255/255,255/255,255/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 30 * cos(i*2*pi/32) + 150
-		sine = 30 * sin(i*2*pi/32) + 190
+		cosine = 30 * cos(i*2*pi/32)
+		sine = 30 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
 	
 	glColor3f(65/255,65/255,65/255)
 	glBegin(GL_QUADS)
-	glVertex2f(115,193)
-	glVertex2f(115,187)
-	glVertex2f(185,187)
-	glVertex2f(185,193)
+	glVertex2f(-35,3)
+	glVertex2f(-35,-3)
+	glVertex2f(35,-3)
+	glVertex2f(35,3)
 
-	glVertex2f(147,225)
-	glVertex2f(147,155)
-	glVertex2f(153,155)
-	glVertex2f(153,225)
+	glVertex2f(-3,35)
+	glVertex2f(-3,-35)
+	glVertex2f(3,-35)
+	glVertex2f(3,35)
 	glEnd()
 	
 	glColor3f(65/255,65/255,65/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 20 * cos(i*2*pi/32) + 150
-		sine = 20 * sin(i*2*pi/32) + 190
+		cosine = 20 * cos(i*2*pi/32)
+		sine = 20 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
 	
 	glColor3f(255/255,255/255,255/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 15 * cos(i*2*pi/32) + 150
-		sine = 15 * sin(i*2*pi/32) + 190
+		cosine = 15 * cos(i*2*pi/32)
+		sine = 15 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
+	glPopMatrix()
 	
 	#wheel-2
+	glPushMatrix()
+	glTranslate(380,190,0)
+	glRotated(wheel,0,0,1)
 	glColor3f(65/255,65/255,65/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 40 * cos(i*2*pi/32) + 380
-		sine = 40 * sin(i*2*pi/32) + 190
+		cosine = 40 * cos(i*2*pi/32)
+		sine = 40 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
 	
 	glColor3f(255/255,255/255,255/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 30 * cos(i*2*pi/32) + 380
-		sine = 30 * sin(i*2*pi/32) + 190
+		cosine = 30 * cos(i*2*pi/32)
+		sine = 30 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
 	
 	glColor3f(65/255,65/255,65/255)
 	glBegin(GL_QUADS)
-	glVertex2f(345,193)
-	glVertex2f(345,187)
-	glVertex2f(415,187)
-	glVertex2f(415,193)
+	glVertex2f(-35,3)
+	glVertex2f(-35,-3)
+	glVertex2f(35,-3)
+	glVertex2f(35,3)
 
-	glVertex2f(377,225)
-	glVertex2f(377,155)
-	glVertex2f(383,155)
-	glVertex2f(383,225)
+	glVertex2f(-3,35)
+	glVertex2f(-3,-35)
+	glVertex2f(3,-35)
+	glVertex2f(3,35)
 	glEnd()
 	
 	glColor3f(65/255,65/255,65/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 20 * cos(i*2*pi/32) + 380
-		sine = 20 * sin(i*2*pi/32) + 190
+		cosine = 20 * cos(i*2*pi/32)
+		sine = 20 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
 	
 	glColor3f(255/255,255/255,255/255)	
 	glBegin(GL_POLYGON)    
 	for i in range(100):    
-		cosine = 15 * cos(i*2*pi/32) + 380
-		sine = 15 * sin(i*2*pi/32) + 190
+		cosine = 15 * cos(i*2*pi/32)
+		sine = 15 * sin(i*2*pi/32)
 		glVertex2f(cosine,sine)
 	glEnd()
+	glPopMatrix()
 	
 	# Copy the off-screen buffer to the screen.
 	glutSwapBuffers()
@@ -276,6 +286,9 @@ def display():
 	x_sidewalk2 = (x_sidewalk2 - 0.5)
 	if(x_sidewalk2 == -50):
 		x_sidewalk2 = 50
+	
+	wheel -= 0.4
+	wheel %= 360
 	glutPostRedisplay()
 
 def refresh2d(width, height):
