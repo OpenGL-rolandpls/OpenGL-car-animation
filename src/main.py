@@ -1,4 +1,5 @@
 import sys
+from math import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -94,6 +95,112 @@ def display():
 	glVertex2f(510,180)
 	glVertex2f(350,180)
 	glEnd()
+	
+	glColor3f(0/255,198/255,255/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(74,320)
+	glVertex2f(63,270)
+	glVertex2f(90,270)
+	glVertex2f(90,320)
+	glEnd()
+	
+	glColor3f(0/255,198/255,255/255)
+	glBegin(GL_QUADS)
+	glVertex2f(76,320)
+	glVertex2f(65,270)
+	glVertex2f(92,270)
+	glVertex2f(103,320)
+	
+	glVertex2f(110,320)
+	glVertex2f(99,270)
+	glVertex2f(205,270)
+	glVertex2f(210,320)
+	
+	glVertex2f(215,320)
+	glVertex2f(220,270)
+	glVertex2f(321,270)
+	glVertex2f(310,320)
+	
+	glVertex2f(320,320)
+	glVertex2f(331,270)
+	glVertex2f(390,270)
+	glVertex2f(350,320)
+	glEnd()
+	
+	glColor3f(15/255,15/255,15/255)
+	glBegin(GL_QUADS)
+	glVertex2f(100,220)
+	glVertex2f(100,200)
+	glVertex2f(520,200)
+	glVertex2f(510,220)
+	glEnd()
+	
+	#wheel-1 
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 40 * cos(i*2*pi/32) + 150
+		sine = 40 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 30 * cos(i*2*pi/32) + 150
+		sine = 30 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 20 * cos(i*2*pi/32) + 150
+		sine = 20 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 15 * cos(i*2*pi/32) + 150
+		sine = 15 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	#wheel-2
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 40 * cos(i*2*pi/32) + 380
+		sine = 40 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 30 * cos(i*2*pi/32) + 380
+		sine = 30 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(65/255,65/255,65/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 20 * cos(i*2*pi/32) + 380
+		sine = 20 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
+	glColor3f(255/255,255/255,255/255)	
+	glBegin(GL_POLYGON)    
+	for i in range(100):    
+		cosine = 15 * cos(i*2*pi/32) + 380
+		sine = 15 * sin(i*2*pi/32) + 190
+		glVertex2f(cosine,sine)
+	glEnd()
+	
 	# Copy the off-screen buffer to the screen.
 	glutSwapBuffers()
 	
