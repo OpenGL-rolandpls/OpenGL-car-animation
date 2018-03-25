@@ -264,9 +264,12 @@ def display():
 		skyB = skyB - dB
 		if (skyR < skyDarkR):
 			plus = True
-	x_road1 = (x_road1 + 0.5)%80
-	x_road2 = (x_road2 + 0.5)%160
-	
+	x_road1 = (x_road1 - 0.5)
+	if(x_road1 == -160):
+		x_road1 = 0
+	x_road2 = (x_road2 - 0.5)
+	if(x_road2 == -80):
+		x_road2 = 80
 	glutPostRedisplay()
 
 def refresh2d(width, height):
