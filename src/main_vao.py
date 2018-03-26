@@ -1,5 +1,4 @@
 import OpenGL.GL as GL
-import glm
 import OpenGL.GL.shaders
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
@@ -154,12 +153,12 @@ def convert_coordinate():
         road_white.append(0.0)
         road_white.append(1.0)
 
-        road_white.append(fx(x1))
+        road_white.append(fx(x2))
         road_white.append(fy(130))
         road_white.append(0.0)
         road_white.append(1.0)
 
-        road_white.append(fx(x2))
+        road_white.append(fx(x1))
         road_white.append(fy(130))
         road_white.append(0.0)
         road_white.append(1.0)
@@ -179,12 +178,12 @@ def convert_coordinate():
         sidewalk_white.append(0.0)
         sidewalk_white.append(1.0)
 
-        sidewalk_white.append(fx(x1))
+        sidewalk_white.append(fx(x2))
         sidewalk_white.append(fy(230))
         sidewalk_white.append(0.0)
         sidewalk_white.append(1.0)
 
-        sidewalk_white.append(fx(x2))
+        sidewalk_white.append(fx(x1))
         sidewalk_white.append(fy(230))
         sidewalk_white.append(0.0)
         sidewalk_white.append(1.0)
