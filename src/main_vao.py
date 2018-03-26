@@ -47,6 +47,23 @@ void main()
 }
 """
 
+fragment_shader_window = """
+#version 330
+
+void main()
+{
+   gl_FragColor = vec4(0.0f,198.0f/255.0f,255.0f/255.0f, 1.0f);
+}
+"""
+
+fragment_shader_car = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(219.0f/255.0f,24.0f/255.0f,76.0f/255.0f, 1.0f);
+}
+"""
+
 vertex_shader_road = """
 #version 330
 
@@ -78,7 +95,7 @@ uniform float r, g, b;
 
 void main()
 {
-   gl_FragColor = vec4(109.0f/255.0f + r, 238.0f/255.0f + g, 255.0f/255.0f + b, 0.0f);
+   gl_FragColor = vec4(109.0f/255.0f + r, 238.0f/255.0f + g, 255.0f/255.0f + b, 1.0f);
 }
 """
 
@@ -99,286 +116,405 @@ void main()
 """
 
 def fx(x):
-    return (1 - (2 - 2*x/800))
+	return (1 - (2 - 2*x/800))
 
 def fy(y):
-    return (1 - (2 - 2*y/600))
+	return (1 - (2 - 2*y/600))
 
 background = [-1.0, 1.0, 0.0, 1.0,
-              1.0, 1.0, 0.0, 1.0,
-              1.0, -1.0, 0.0, 1.0,
-              -1.0, -1.0, 0.0, 1.0]
+			  1.0, 1.0, 0.0, 1.0,
+			  1.0, -1.0, 0.0, 1.0,
+			  -1.0, -1.0, 0.0, 1.0]
+car = [80.0, 330.0, 0.0, 1.0,
+		340.0, 330.0,  0.0, 1.0,
+		450.0, 180.0,  0.0, 1.0,
+		60.0, 180.0,  0.0, 1.0, 
+		60.0, 250.0, 0.0, 1.0]	
+
+carFront = [ 350,270, 0.0, 1.0,
+			490,250, 0.0, 1.0,
+			510,210,0.0, 1.0,
+			510,180,0.0, 1.0,
+			350,180, 0.0, 1.0
+			]
+
+window_1 =[ 76,320, 0.0 , 1.0,
+			65,270, 0.0, 1.0,
+			92,270, 0.0, 1.0,
+			103,320, 0.0, 1.0
+		]
+			
+window_2 = [110,320, 0.0, 1.0,
+			99,270, 0.0, 1.0,
+			205,270, 0.0, 1.0,
+			210,320, 0.0, 1.0]
+			
+window_3 = [215,320, 0.0, 1.0,
+			220,270, 0.0, 1.0,
+			321,270, 0.0, 1.0,
+			310,320, 0.0, 1.0]
+			
+window_4 = [320,320, 0.0, 1.0,
+			331,270, 0.0, 1.0,
+			390,270, 0.0, 1.0,
+			350,320, 0.0, 1.0]
 
 road = [0.0, 200.0, 0.0, 1.0,
-        800.0, 200.0, 0.0, 1.0,
-        800.0, 0.0, 0.0, 1.0,
-        0.0, 0.0, 0.0, 1.0]
+		800.0, 200.0, 0.0, 1.0,
+		800.0, 0.0, 0.0, 1.0,
+		0.0, 0.0, 0.0, 1.0]
 
 road_white = []
 
 sidewalk = [0.0, 200.0, 0.0, 1.0,
-        800.0, 200.0, 0.0, 1.0,
-        800.0, 230.0, 0.0, 1.0,
-        0.0, 230.0, 0.0, 1.0]
+		800.0, 200.0, 0.0, 1.0,
+		800.0, 230.0, 0.0, 1.0,
+		0.0, 230.0, 0.0, 1.0]
 
 sidewalk_white = []
 
 vertices = [ 1,  1, 0.0, 1.0,
-            0.0,  0.6, 0.0, 1.0,
-             0.0, -0.6, 0.0, 1.0]
+			0.0,  0.6, 0.0, 1.0,
+			 0.0, -0.6, 0.0, 1.0]
 
 vertices2 = [ 0.0,  0.6, 0.0, 1.0,
-            -0.6,  0.6, 0.0, 1.0,
-             0.0, -0.6, 0.0, 1.0]
+			-0.6,  0.6, 0.0, 1.0,
+			 0.0, -0.6, 0.0, 1.0]
 
 background = numpy.array(background, dtype=numpy.float32)			 
 vertices = numpy.array(vertices, dtype=numpy.float32)
 vertices2 = numpy.array(vertices2, dtype=numpy.float32)
 
 def convert_coordinate():
-    global road, sidewalk, road_white, sidewalk_white
-    global x_road1, x_road2
+	global road, sidewalk, road_white, sidewalk_white, car, carFront
+	global window_1, window_2, window_3, window_4
+	global x_road1, x_road2
 
-    #init white dashed road
-    x1 = x_road1
-    x2 = x_road2
-    for i in range(0,10):
-        road_white.append(fx(x1))
-        road_white.append(fy(100))
-        road_white.append(0.0)
-        road_white.append(1.0)
+	#init white dashed road
+	x1 = x_road1
+	x2 = x_road2
+	for i in range(0,10):
+		road_white.append(fx(x1))
+		road_white.append(fy(100))
+		road_white.append(0.0)
+		road_white.append(1.0)
 
-        road_white.append(fx(x2))
-        road_white.append(fy(100))
-        road_white.append(0.0)
-        road_white.append(1.0)
+		road_white.append(fx(x2))
+		road_white.append(fy(100))
+		road_white.append(0.0)
+		road_white.append(1.0)
 
-        road_white.append(fx(x2))
-        road_white.append(fy(130))
-        road_white.append(0.0)
-        road_white.append(1.0)
+		road_white.append(fx(x2))
+		road_white.append(fy(130))
+		road_white.append(0.0)
+		road_white.append(1.0)
 
-        road_white.append(fx(x1))
-        road_white.append(fy(130))
-        road_white.append(0.0)
-        road_white.append(1.0)
-        x1 += 160
-        x2 += 160
-    
-    x1 = x_sidewalk1
-    x2 = x_sidewalk2
-    for i in range(0,20):
-        sidewalk_white.append(fx(x1))
-        sidewalk_white.append(fy(200))
-        sidewalk_white.append(0.0)
-        sidewalk_white.append(1.0)
+		road_white.append(fx(x1))
+		road_white.append(fy(130))
+		road_white.append(0.0)
+		road_white.append(1.0)
+		x1 += 160
+		x2 += 160
+	
+	x1 = x_sidewalk1
+	x2 = x_sidewalk2
+	for i in range(0,20):
+		sidewalk_white.append(fx(x1))
+		sidewalk_white.append(fy(200))
+		sidewalk_white.append(0.0)
+		sidewalk_white.append(1.0)
 
-        sidewalk_white.append(fx(x2))
-        sidewalk_white.append(fy(200))
-        sidewalk_white.append(0.0)
-        sidewalk_white.append(1.0)
+		sidewalk_white.append(fx(x2))
+		sidewalk_white.append(fy(200))
+		sidewalk_white.append(0.0)
+		sidewalk_white.append(1.0)
 
-        sidewalk_white.append(fx(x2))
-        sidewalk_white.append(fy(230))
-        sidewalk_white.append(0.0)
-        sidewalk_white.append(1.0)
+		sidewalk_white.append(fx(x2))
+		sidewalk_white.append(fy(230))
+		sidewalk_white.append(0.0)
+		sidewalk_white.append(1.0)
 
-        sidewalk_white.append(fx(x1))
-        sidewalk_white.append(fy(230))
-        sidewalk_white.append(0.0)
-        sidewalk_white.append(1.0)
-        x1 += 100
-        x2 += 100
+		sidewalk_white.append(fx(x1))
+		sidewalk_white.append(fy(230))
+		sidewalk_white.append(0.0)
+		sidewalk_white.append(1.0)
+		x1 += 100
+		x2 += 100
 
-    print(road_white)
-    for i in range(0, len(road), 4):
-        road[i] = fx(road[i])
-        road[i+1] = fy(road[i+1])
+	print(road_white)
+	for i in range(0, len(road), 4):
+		road[i] = fx(road[i])
+		road[i+1] = fy(road[i+1])
 
-        sidewalk[i] = fx(sidewalk[i])
-        sidewalk[i+1] = fy(sidewalk[i+1])
+		sidewalk[i] = fx(sidewalk[i])
+		sidewalk[i+1] = fy(sidewalk[i+1])
 
-        
-    sidewalk_white = numpy.array(sidewalk_white, dtype=numpy.float32)    
-    road_white = numpy.array(road_white, dtype=numpy.float32)
-    sidewalk = numpy.array(sidewalk, dtype=numpy.float32)
-    road = numpy.array(road, dtype=numpy.float32)
-    
+	for i in range(0, len(car), 4):
+		car[i] = fx(car[i])
+		car[i+1] = fy(car[i+1])
+		
+		carFront[i] = fx(carFront[i])
+		carFront[i+1] = fy(carFront[i+1])
+		
+	for i in range(0,len(window_1), 4):
+		window_1[i] = fx(window_1[i])
+		window_1[i+1] = fy(window_1[i+1])
+		
+		window_2[i] = fx(window_2[i])
+		window_2[i+1] = fy(window_2[i+1])
+		
+		window_3[i] = fx(window_3[i])
+		window_3[i+1] = fy(window_3[i+1])
+		
+		window_4[i] = fx(window_4[i])
+		window_4[i+1] = fy(window_4[i+1])
+		
+	sidewalk_white = numpy.array(sidewalk_white, dtype=numpy.float32)	
+	road_white = numpy.array(road_white, dtype=numpy.float32)
+	sidewalk = numpy.array(sidewalk, dtype=numpy.float32)
+	road = numpy.array(road, dtype=numpy.float32)
+	car = numpy.array(car, dtype=numpy.float32)
+	carFront = numpy.array(carFront, dtype=numpy.float32)
+	window_1= numpy.array(window_1, dtype=numpy.float32)
+	window_2= numpy.array(window_2, dtype=numpy.float32)
+	window_3= numpy.array(window_3, dtype=numpy.float32)
+	window_4= numpy.array(window_4, dtype=numpy.float32)
+	
 
 def create_object(shader, datas):
-    
-    # Create a new VAO (Vertex Array Object) and bind it
-    vertex_array_object = GL.glGenVertexArrays(1)
-    GL.glBindVertexArray( vertex_array_object )
-    
-    # Generate buffers to hold our vertices
-    vertex_buffer = GL.glGenBuffers(1)
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vertex_buffer)
-    
-    # Get the position of the 'position' in parameter of our shader and bind it.
-    position = GL.glGetAttribLocation(shader, 'position')
-    #GL.glEnableVertexAttribArray(position)
-    GL.glEnableVertexAttribArray(position)
+	
+	# Create a new VAO (Vertex Array Object) and bind it
+	vertex_array_object = GL.glGenVertexArrays(1)
+	GL.glBindVertexArray( vertex_array_object )
+	
+	# Generate buffers to hold our vertices
+	vertex_buffer = GL.glGenBuffers(1)
+	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, vertex_buffer)
+	
+	# Get the position of the 'position' in parameter of our shader and bind it.
+	position = GL.glGetAttribLocation(shader, 'position')
+	#GL.glEnableVertexAttribArray(position)
+	GL.glEnableVertexAttribArray(position)
 
-    # Describe the position data layout in the buffer
-    GL.glVertexAttribPointer(position, 4, GL.GL_FLOAT, False, 0, ctypes.c_void_p(0))
-    
-    # Send the data over to the buffer
-    GL.glBufferData(GL.GL_ARRAY_BUFFER, 4 * len(datas), datas, GL.GL_STATIC_DRAW)
-    #GL.glBufferData(GL.GL_ARRAY_BUFFER, 48, vertices2, GL.GL_STATIC_DRAW)
-    # Unbind the VAO first (Important)
-    GL.glBindVertexArray( 0 )
-    
-    # Unbind other stuff
-    GL.glDisableVertexAttribArray(position)
-    GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
-    
-    return vertex_array_object
-    
+	# Describe the position data layout in the buffer
+	GL.glVertexAttribPointer(position, 4, GL.GL_FLOAT, False, 0, ctypes.c_void_p(0))
+	
+	# Send the data over to the buffer
+	GL.glBufferData(GL.GL_ARRAY_BUFFER, 4 * len(datas), datas, GL.GL_STATIC_DRAW)
+	#GL.glBufferData(GL.GL_ARRAY_BUFFER, 48, vertices2, GL.GL_STATIC_DRAW)
+	# Unbind the VAO first (Important)
+	GL.glBindVertexArray( 0 )
+	
+	# Unbind other stuff
+	GL.glDisableVertexAttribArray(position)
+	GL.glBindBuffer(GL.GL_ARRAY_BUFFER, 0)
+	
+	return vertex_array_object
+	
 def display(shader, vertex_array_object):
-    global transform_road, transform_sidewalk
-    global dR, dG, dB
-    global skyColorR, skyColorG, skyColorB
-    global skyR, skyG, skyB
-    global plus
+	global transform_road, transform_sidewalk
+	global dR, dG, dB
+	global skyColorR, skyColorG, skyColorB
+	global skyR, skyG, skyB
+	global plus
 
-    GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+	GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+	GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+	
+	GL.glUseProgram(shader[5])
+	GL.glBindVertexArray( vertex_array_object[10] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 10 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[5])
+	GL.glBindVertexArray( vertex_array_object[9] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 9 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[5])
+	GL.glBindVertexArray( vertex_array_object[8] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 8 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[5])
+	GL.glBindVertexArray( vertex_array_object[7] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 7 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[4])
+	GL.glBindVertexArray( vertex_array_object[6] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 5)
+	GL.glBindVertexArray( 6 )
+	GL.glUseProgram(0)
+	#car
+	GL.glUseProgram(shader[4])
+	GL.glBindVertexArray( vertex_array_object[5] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 5)
+	GL.glBindVertexArray( 5 )
+	GL.glUseProgram(0)
+	# sidewalk_white
+	GL.glUseProgram(shader[3])
 
-    # sidewalk_white
-    GL.glUseProgram(shader[3])
+	transLoc = GL.glGetUniformLocation(shader[3], "transform")
+	GL.glUniform1f(transLoc, transform_sidewalk)
+	transform_sidewalk -= (0.5/800)
 
-    transLoc = GL.glGetUniformLocation(shader[3], "transform")
-    GL.glUniform1f(transLoc, transform_sidewalk)
-    transform_sidewalk -= (0.5/800)
+	if(transform_sidewalk <= (-1.0-5/800)):
+		transform_sidewalk = 0.0
 
-    if(transform_sidewalk <= (-1.0-5/800)):
-        transform_sidewalk = 0.0
+	GL.glBindVertexArray( vertex_array_object[4] )
+	GL.glDrawArrays(GL.GL_QUADS, 0, 80)
+	GL.glBindVertexArray( 0 )
+	GL.glUseProgram(0)
 
-    GL.glBindVertexArray( vertex_array_object[4] )
-    GL.glDrawArrays(GL.GL_QUADS, 0, 80)
-    GL.glBindVertexArray( 0 )
-    GL.glUseProgram(0)
+	# road_white
+	GL.glUseProgram(shader[3])
 
-    # road_white
-    GL.glUseProgram(shader[3])
+	transLoc = GL.glGetUniformLocation(shader[3], "transform")
+	GL.glUniform1f(transLoc, transform_road)
+	transform_road -= (0.5/800)
 
-    transLoc = GL.glGetUniformLocation(shader[3], "transform")
-    GL.glUniform1f(transLoc, transform_road)
-    transform_road -= (0.5/800)
+	if(transform_road <= (-1.0-160/800)):
+		transform_road = 0.0
 
-    if(transform_road <= (-1.0-160/800)):
-        transform_road = 0.0
+	GL.glBindVertexArray( vertex_array_object[3] )
+	GL.glDrawArrays(GL.GL_QUADS, 0, 40)
+	GL.glBindVertexArray( 3 )
+	GL.glUseProgram(0)
 
-    GL.glBindVertexArray( vertex_array_object[3] )
-    GL.glDrawArrays(GL.GL_QUADS, 0, 40)
-    GL.glBindVertexArray( 3 )
-    GL.glUseProgram(0)
+	# road
+	GL.glUseProgram(shader[0])
+	GL.glBindVertexArray( vertex_array_object[0] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 0 )
+	GL.glUseProgram(0)
 
-    # road
-    GL.glUseProgram(shader[0])
-    GL.glBindVertexArray( vertex_array_object[0] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
-    GL.glBindVertexArray( 0 )
-    GL.glUseProgram(0)
+	# sidewalk
+	GL.glUseProgram(shader[2])
+	GL.glBindVertexArray( vertex_array_object[2] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 2 )
+	GL.glUseProgram(0)
 
-    # sidewalk
-    GL.glUseProgram(shader[2])
-    GL.glBindVertexArray( vertex_array_object[2] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
-    GL.glBindVertexArray( 2 )
-    GL.glUseProgram(0)
+	# sky
+	GL.glUseProgram(shader[1])
 
-    # sky
-    GL.glUseProgram(shader[1])
+	redLoc = GL.glGetUniformLocation(shader[1], "r")
+	greenLoc = GL.glGetUniformLocation(shader[1], "g")
+	blueLoc = GL.glGetUniformLocation(shader[1], "b")
 
-    redLoc = GL.glGetUniformLocation(shader[1], "r")
-    greenLoc = GL.glGetUniformLocation(shader[1], "g")
-    blueLoc = GL.glGetUniformLocation(shader[1], "b")
+	if(skyR < skyColorR) and (plus):
+		skyR = skyR + dR
+		skyG = skyG + dG
+		skyB = skyB + dB
+		GL.glUniform1f(redLoc, -skyR)
+		GL.glUniform1f(greenLoc, -skyG)
+		GL.glUniform1f(blueLoc, -skyB)
+		if (skyR >= skyColorR):
+			plus = False
+	else:
+		skyR = skyR - dR
+		skyG = skyG - dG
+		skyB = skyB - dB
+		GL.glUniform1f(redLoc, -skyR)
+		GL.glUniform1f(greenLoc, -skyG)
+		GL.glUniform1f(blueLoc, -skyB)
+		if (skyR <= skyDarkR):
+			plus = True
 
-    if(skyR < skyColorR) and (plus):
-        skyR = skyR + dR
-        skyG = skyG + dG
-        skyB = skyB + dB
-        GL.glUniform1f(redLoc, -skyR)
-        GL.glUniform1f(greenLoc, -skyG)
-        GL.glUniform1f(blueLoc, -skyB)
-        if (skyR >= skyColorR):
-            plus = False
-    else:
-        skyR = skyR - dR
-        skyG = skyG - dG
-        skyB = skyB - dB
-        GL.glUniform1f(redLoc, -skyR)
-        GL.glUniform1f(greenLoc, -skyG)
-        GL.glUniform1f(blueLoc, -skyB)
-        if (skyR <= skyDarkR):
-            plus = True
-
-    GL.glBindVertexArray( vertex_array_object[1] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
-    GL.glBindVertexArray( 1 )
-    GL.glUseProgram(0)
+	GL.glBindVertexArray( vertex_array_object[1] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 1 )
+	GL.glUseProgram(0)
 
 def main():
-    global background, sidewalk, road, transform_sidewalk
+	global background, sidewalk, road, transform_sidewalk
 
-    convert_coordinate()
-    pygame.init()
-    screen = pygame.display.set_mode((800, 600), pygame.OPENGL|pygame.DOUBLEBUF)
-    GL.glClearColor(0.5, 0.5, 0.5, 1.0)
-    GL.glEnable(GL.GL_DEPTH_TEST)
+	convert_coordinate()
+	pygame.init()
+	screen = pygame.display.set_mode((800, 600), pygame.OPENGL|pygame.DOUBLEBUF)
+	GL.glClearColor(0.5, 0.5, 0.5, 1.0)
+	GL.glEnable(GL.GL_DEPTH_TEST)
 
-    shader_road = OpenGL.GL.shaders.compileProgram(
-        OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
-        OpenGL.GL.shaders.compileShader(fragment_shader_road, GL.GL_FRAGMENT_SHADER)
-    )
+	shader_road = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_road, GL.GL_FRAGMENT_SHADER)
+	)
 
-    shader_road_white = OpenGL.GL.shaders.compileProgram(
-        OpenGL.GL.shaders.compileShader(vertex_shader_road, GL.GL_VERTEX_SHADER),
-        OpenGL.GL.shaders.compileShader(fragment_shader_white, GL.GL_FRAGMENT_SHADER)
-    )
+	shader_road_white = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader_road, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_white, GL.GL_FRAGMENT_SHADER)
+	)
 
-    shader_sidewalk = OpenGL.GL.shaders.compileProgram(
-        OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
-        OpenGL.GL.shaders.compileShader(fragment_shader_sidewalk, GL.GL_FRAGMENT_SHADER)
-    )
+	shader_sidewalk = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_sidewalk, GL.GL_FRAGMENT_SHADER)
+	)
 
-    shader_sky = OpenGL.GL.shaders.compileProgram(
-        OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
-        OpenGL.GL.shaders.compileShader(fragment_shader_sky, GL.GL_FRAGMENT_SHADER)
-    )
+	shader_sky = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_sky, GL.GL_FRAGMENT_SHADER)
+	)
+	
+	shader_car = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_car, GL.GL_FRAGMENT_SHADER)
+	)
+	
+	shader_window = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_window, GL.GL_FRAGMENT_SHADER)
+	)
 
-    shaders = []
-    shaders.append(shader_road)
-    shaders.append(shader_sky)
-    shaders.append(shader_sidewalk)
-    shaders.append(shader_road_white)
+	shaders = []
+	shaders.append(shader_road)
+	shaders.append(shader_sky)
+	shaders.append(shader_sidewalk)
+	shaders.append(shader_road_white)
+	shaders.append(shader_car)
+	shaders.append(shader_window)
+	
+	shaders.append(shader_window)
+	
+	shaders.append(shader_window)
+	
+	shaders.append(shader_window)
 
-    clock = pygame.time.Clock()
-    vertex_array_object = []
-    vertex_array_object.append(create_object(shader_road, road))
-    vertex_array_object.append(create_object(shader_sky, background))
-    vertex_array_object.append(create_object(shader_sidewalk, sidewalk))
-    vertex_array_object.append(create_object(shader_road_white, road_white))     
-    vertex_array_object.append(create_object(shader_road_white, sidewalk_white))
+	clock = pygame.time.Clock()
+	vertex_array_object = []
+	vertex_array_object.append(create_object(shader_road, road))
+	vertex_array_object.append(create_object(shader_sky, background))
+	vertex_array_object.append(create_object(shader_sidewalk, sidewalk))
+	vertex_array_object.append(create_object(shader_road_white, road_white))	 
+	vertex_array_object.append(create_object(shader_road_white, sidewalk_white))
+	vertex_array_object.append(create_object(shader_car, car))
+	vertex_array_object.append(create_object(shader_car, carFront))
+	vertex_array_object.append(create_object(shader_window, window_1))
+	vertex_array_object.append(create_object(shader_window, window_2))
+	vertex_array_object.append(create_object(shader_window, window_3))
+	vertex_array_object.append(create_object(shader_window, window_4))
 
-    while True:
-        
+	while True:
+		
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return
-            if event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
-                return
-        
-        display(shaders, vertex_array_object)
-        # vertices[0] += 0.001
-        # vertices2[4] -= 0.001
-        
-        pygame.display.flip()
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				return
+			if event.type == pygame.KEYUP and event.key == pygame.K_ESCAPE:
+				return
+		
+		display(shaders, vertex_array_object)
+		# vertices[0] += 0.001
+		# vertices2[4] -= 0.001
+		
+		pygame.display.flip()
 
 if __name__ == '__main__':
-    try:
-        main()
-    finally:
-        pygame.quit()
+	try:
+		main()
+	finally:
+		pygame.quit()
