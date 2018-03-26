@@ -10,6 +10,14 @@ x_road2 = 80
 x_sidewalk1 = 0
 x_sidewalk2 = 50
 
+building1 = 0
+building2 = 110
+building3 = 400
+building4 = 230
+building5 = 500
+building6 = 650
+building7 = 800
+
 skyColorR = 109/255
 skyColorG = 238/255
 skyColorB = 255/255
@@ -34,6 +42,7 @@ wheel = 0
 def display():
 	global x_road1
 	global x_road2
+	global building1, building2, building3, building4, building5, building6, building7
 	global skyColorR, skyColorG, skyColorB
 	global skyR, skyG, skyB
 	global skyDarkR, skyDarkG, skyDarkB
@@ -55,6 +64,101 @@ def display():
 	glVertex2f(800,0)
 	glVertex2f(800,600)
 	glVertex2f(0,600)
+	glEnd()
+
+	#gedung-1
+	glColor3f(100/255,150/255,166/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building1,200)
+	glVertex2f(building1,500)
+	glVertex2f(building1+30,500)
+	glVertex2f(building1+30,530)
+	glVertex2f(building1+60,530)
+	glVertex2f(building1+60,560)
+	glVertex2f(building1+90,560)
+	glVertex2f(building1+90,590)
+	glVertex2f(building1+110,590)
+	glVertex2f(building1+110,560)
+	glVertex2f(building1+140,560)
+	glVertex2f(building1+140,530)
+	glVertex2f(building1+170,530)
+	glVertex2f(building1+170,500)
+	glVertex2f(building1+200,500)
+	glVertex2f(building1+200,200)
+	glEnd()
+
+	#gedung-2
+	glColor3f(130/255,149/255,169/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building2,200)
+	glVertex2f(building2,510)
+	glVertex2f(building2+160,540)
+	glVertex2f(building2+160,200)
+	glEnd()
+
+	#gedung-3
+	glColor3f(130/255,150/255,236/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building3,200)
+	glVertex2f(building3,550)
+	glVertex2f(building3+200,550)
+	glVertex2f(building3+200,200)
+	glEnd()
+
+	#gedung-4
+	glColor3f(200/255,170/255,236/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building4,200)
+	glVertex2f(building4,480)
+	glVertex2f(building4+35,480)
+	glVertex2f(building4+35,510)
+	glVertex2f(building4+65,510)
+	glVertex2f(building4+65,540)
+	glVertex2f(building4+95,540)
+	glVertex2f(building4+95,570)
+	glVertex2f(building4+105,570)
+	glVertex2f(building4+105,540)
+	glVertex2f(building4+135,540)
+	glVertex2f(building4+135,510)
+	glVertex2f(building4+165,510)
+	glVertex2f(building4+165,480)
+	glVertex2f(building4+200,480)
+	glVertex2f(building4+200,200)
+	glEnd()
+
+	#gedung-5
+	glColor3f(100/255,150/255,166/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building5,200)
+	glVertex2f(building5,500)
+	glVertex2f(building5+30,500)
+	glVertex2f(building5+30,530)
+	glVertex2f(building5+120,530)
+	glVertex2f(building5+120,500)
+	glVertex2f(building5+150,500)
+	glVertex2f(building5+150,200)
+	glEnd()
+
+	#gedung-6
+	glColor3f(130/255,149/255,169/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building6,200)
+	glVertex2f(building6,470)
+	glVertex2f(building6+200,430)
+	glVertex2f(building6+200,200)
+	glEnd()
+
+	#gedung-7
+	glColor3f(200/255,99/255,149/255)
+	glBegin(GL_POLYGON)
+	glVertex2f(building7,200)
+	glVertex2f(building7,480)
+	glVertex2f(building7+50,480)
+	glVertex2f(building7+50,570)
+	glVertex2f(building7+60,570)
+	glVertex2f(building7+60,480)
+	glVertex2f(building7+200,480)
+	glVertex2f(building7+200,200)
 	glEnd()
 
 	# jalan
@@ -274,6 +378,28 @@ def display():
 		skyB = skyB - dB
 		if (skyR < skyDarkR):
 			plus = True
+	
+	building1 = (building1 - 0.5)
+	if(building1 == -200):
+		building1 = 800
+	building2 = (building2 - 0.5)
+	if(building2 == -200):
+		building2 = 800
+	building3 = (building3 - 0.5)
+	if(building3 == -200):
+		building3 = 800
+	building4 = (building4 - 0.5)
+	if(building4 == -200):
+		building4 = 800
+	building5 = (building5 - 0.5)
+	if(building5 == -200):
+		building5 = 800
+	building6 = (building6 - 0.5)
+	if(building6 == -200):
+		building6 = 800
+	building7 = (building7 - 0.5)
+	if(building7 == -200):
+		building7 = 800
 	x_road1 = (x_road1 - 0.5)
 	if(x_road1 == -160):
 		x_road1 = 0
