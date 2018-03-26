@@ -149,6 +149,14 @@ void main()
 }
 """
 
+fragment_shader_foot_step = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(0.06f, 0.06f, 0.06f, 1.0f);
+}
+"""
+
 fragment_shader_white = """
 #version 330
 void main()
@@ -193,6 +201,11 @@ carFront = [ 350,270, 0.0, 1.0,
             510,180,0.0, 1.0,
             350,180, 0.0, 1.0
             ]
+
+carFootStep = [100.0, 220.0, 0.0, 1.0,
+				100.0, 200.0, 0.0, 1.0,
+				520.0, 200.0, 0.0, 1.0,
+				510.0, 220.0, 0.0, 1.0,]
 
 window_1 =[ 76,320, 0.0 , 1.0,
             65,270, 0.0, 1.0,
@@ -251,7 +264,7 @@ vertices = numpy.array(vertices, dtype=numpy.float32)
 vertices2 = numpy.array(vertices2, dtype=numpy.float32)
 
 def convert_coordinate():
-    global road, sidewalk, road_white, sidewalk_white, car, carFront
+    global road, sidewalk, road_white, sidewalk_white, car, carFront, carFootStep
     global window_1, window_2, window_3, window_4
     global rightWheel, leftWheel, innerRight, innerLeft, inLeftWheel, inRightWheel, inInnerRight, inInnerLeft
     global spokes, properties
@@ -390,6 +403,10 @@ def convert_coordinate():
         
         carFront[i] = fx(carFront[i])
         carFront[i+1] = fy(carFront[i+1])
+
+    for i in range(0, len(carFootStep),4):
+	    carFootStep[i] = fx(carFootStep[i])
+	    carFootStep[i+1] = fy(carFootStep[i+1])
         
     for i in range(0,len(window_1), 4):
         window_1[i] = fx(window_1[i])
@@ -414,6 +431,7 @@ def convert_coordinate():
     road = numpy.array(road, dtype=numpy.float32)
     car = numpy.array(car, dtype=numpy.float32)
     carFront = numpy.array(carFront, dtype=numpy.float32)
+    carFootStep = numpy.array(carFootStep, dtype=numpy.float32)
     window_1= numpy.array(window_1, dtype=numpy.float32)
     window_2= numpy.array(window_2, dtype=numpy.float32)
     window_3= numpy.array(window_3, dtype=numpy.float32)
@@ -470,25 +488,25 @@ def display(shader, vertex_array_object):
     GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 
     #Inner_InnerWheel
-    GL.glUseProgram(shader[7])
+    GL.glUseProgram(shader[8])
+    GL.glBindVertexArray( vertex_array_object[19] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+    GL.glBindVertexArray( 19 )
+    GL.glUseProgram(0)
+    
+    GL.glUseProgram(shader[8])
     GL.glBindVertexArray( vertex_array_object[18] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
     GL.glBindVertexArray( 18 )
     GL.glUseProgram(0)
-    
-    GL.glUseProgram(shader[7])
-    GL.glBindVertexArray( vertex_array_object[17] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
-    GL.glBindVertexArray( 17 )
-    GL.glUseProgram(0)
 
     # spokes
-    GL.glUseProgram(shader[9])
+    GL.glUseProgram(shader[10])
     
-    sinLoc = GL.glGetUniformLocation(shader[9], "sina")
-    cosLoc = GL.glGetUniformLocation(shader[9], "cosa")
-    offsetXLoc = GL.glGetUniformLocation(shader[9], "offsetX")
-    offsetYLoc = GL.glGetUniformLocation(shader[9], "offsetY")
+    sinLoc = GL.glGetUniformLocation(shader[10], "sina")
+    cosLoc = GL.glGetUniformLocation(shader[10], "cosa")
+    offsetXLoc = GL.glGetUniformLocation(shader[10], "offsetX")
+    offsetYLoc = GL.glGetUniformLocation(shader[10], "offsetY")
     
     sine = sin(wheel_rotation_deg * 2 * pi/32)
     cosine = cos(wheel_rotation_deg * 2 * pi/32)
@@ -497,16 +515,16 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(offsetXLoc, spokes1_offset_x)
     GL.glUniform1f(offsetYLoc, spokes1_offset_y)
 
-    GL.glBindVertexArray( vertex_array_object[20] )
+    GL.glBindVertexArray( vertex_array_object[21] )
     GL.glDrawArrays(GL.GL_QUADS, 0, 8)
     GL.glBindVertexArray(0)
     GL.glUseProgram(0)
 
-    GL.glUseProgram(shader[9])
-    sinLoc = GL.glGetUniformLocation(shader[9], "sina")
-    cosLoc = GL.glGetUniformLocation(shader[9], "cosa")
-    offsetXLoc = GL.glGetUniformLocation(shader[9], "offsetX")
-    offsetYLoc = GL.glGetUniformLocation(shader[9], "offsetY")
+    GL.glUseProgram(shader[10])
+    sinLoc = GL.glGetUniformLocation(shader[10], "sina")
+    cosLoc = GL.glGetUniformLocation(shader[10], "cosa")
+    offsetXLoc = GL.glGetUniformLocation(shader[10], "offsetX")
+    offsetYLoc = GL.glGetUniformLocation(shader[10], "offsetY")
     
     sine = sin(wheel_rotation_deg * 2 * pi/32)
     cosine = cos(wheel_rotation_deg * 2 * pi/32)
@@ -516,80 +534,87 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(offsetYLoc, spokes2_offset_y)
     wheel_rotation_deg = 0 if (wheel_rotation_deg >= 360) else (wheel_rotation_deg + 0.02)
 
-    GL.glBindVertexArray( vertex_array_object[20] )
+    GL.glBindVertexArray( vertex_array_object[21] )
     GL.glDrawArrays(GL.GL_QUADS, 0, 8)
     GL.glBindVertexArray(0)
     GL.glUseProgram(0)
     
     #Inner_OuterWheel
-    GL.glUseProgram(shader[6])
+    GL.glUseProgram(shader[7])
+    GL.glBindVertexArray( vertex_array_object[17] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+    GL.glBindVertexArray( 17 )
+    GL.glUseProgram(0)
+    
+    GL.glUseProgram(shader[7])
     GL.glBindVertexArray( vertex_array_object[16] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
     GL.glBindVertexArray( 16 )
     GL.glUseProgram(0)
     
-    GL.glUseProgram(shader[6])
+    #Inner Wheel
+    GL.glUseProgram(shader[8])
     GL.glBindVertexArray( vertex_array_object[15] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
     GL.glBindVertexArray( 15 )
     GL.glUseProgram(0)
     
-    #Inner Wheel
-    GL.glUseProgram(shader[7])
+    GL.glUseProgram(shader[8])
     GL.glBindVertexArray( vertex_array_object[14] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
     GL.glBindVertexArray( 14 )
     GL.glUseProgram(0)
     
+    # Wheel
     GL.glUseProgram(shader[7])
     GL.glBindVertexArray( vertex_array_object[13] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
     GL.glBindVertexArray( 13 )
     GL.glUseProgram(0)
     
-    # Wheel
-    GL.glUseProgram(shader[6])
+    GL.glUseProgram(shader[7])
     GL.glBindVertexArray( vertex_array_object[12] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
-    GL.glBindVertexArray( 11 )
-    GL.glUseProgram(0)
-    
-    GL.glUseProgram(shader[6])
-    GL.glBindVertexArray( vertex_array_object[11] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
-    GL.glBindVertexArray( 11 )
+    GL.glBindVertexArray( 12 )
     GL.glUseProgram(0)
     
     # Properties
-    GL.glUseProgram(shader[8])
-    GL.glBindVertexArray( vertex_array_object[19] )
+    GL.glUseProgram(shader[9])
+    GL.glBindVertexArray( vertex_array_object[20] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
-    GL.glBindVertexArray( 19 )
+    GL.glBindVertexArray( 20 )
+    GL.glUseProgram(0)
+
+    # Car Foot Step
+    GL.glUseProgram(shader[5])
+    GL.glBindVertexArray( vertex_array_object[7] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+    GL.glBindVertexArray( 7 )
     GL.glUseProgram(0)
 
     # windows
-    GL.glUseProgram(shader[5])
+    GL.glUseProgram(shader[6])
+    GL.glBindVertexArray( vertex_array_object[11] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+    GL.glBindVertexArray( 11 )
+    GL.glUseProgram(0)
+    
+    GL.glUseProgram(shader[6])
     GL.glBindVertexArray( vertex_array_object[10] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
     GL.glBindVertexArray( 10 )
     GL.glUseProgram(0)
     
-    GL.glUseProgram(shader[5])
+    GL.glUseProgram(shader[6])
     GL.glBindVertexArray( vertex_array_object[9] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
     GL.glBindVertexArray( 9 )
     GL.glUseProgram(0)
     
-    GL.glUseProgram(shader[5])
+    GL.glUseProgram(shader[6])
     GL.glBindVertexArray( vertex_array_object[8] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
     GL.glBindVertexArray( 8 )
-    GL.glUseProgram(0)
-    
-    GL.glUseProgram(shader[5])
-    GL.glBindVertexArray( vertex_array_object[7] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
-    GL.glBindVertexArray( 7 )
     GL.glUseProgram(0)
     
     GL.glUseProgram(shader[4])
@@ -712,6 +737,11 @@ def main():
         OpenGL.GL.shaders.compileShader(fragment_shader_car, GL.GL_FRAGMENT_SHADER)
     )
 
+    shader_car_footstep = OpenGL.GL.shaders.compileProgram(
+        OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+        OpenGL.GL.shaders.compileShader(fragment_shader_foot_step, GL.GL_FRAGMENT_SHADER)
+    )
+
     shader_spokes = OpenGL.GL.shaders.compileProgram(
         OpenGL.GL.shaders.compileShader(vertex_shader_spoke, GL.GL_VERTEX_SHADER),
         OpenGL.GL.shaders.compileShader(fragment_shader_outerWheel, GL.GL_FRAGMENT_SHADER)
@@ -743,6 +773,7 @@ def main():
     shaders.append(shader_sidewalk)
     shaders.append(shader_road_white)
     shaders.append(shader_car)
+    shaders.append(shader_car_footstep)
     shaders.append(shader_window)
     shaders.append(shader_outerWheel)
     shaders.append(shader_innerWheel)
@@ -758,6 +789,7 @@ def main():
     vertex_array_object.append(create_object(shader_road_white, sidewalk_white))
     vertex_array_object.append(create_object(shader_car, car))
     vertex_array_object.append(create_object(shader_car, carFront))
+    vertex_array_object.append(create_object(shader_car_footstep, carFootStep))
     vertex_array_object.append(create_object(shader_window, window_1))
     vertex_array_object.append(create_object(shader_window, window_2))
     vertex_array_object.append(create_object(shader_window, window_3))
