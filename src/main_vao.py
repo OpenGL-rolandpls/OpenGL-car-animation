@@ -2,6 +2,7 @@ import OpenGL.GL as GL
 import OpenGL.GL.shaders
 from OpenGL.GLU import *
 from OpenGL.GLUT import *
+from math import *
 import ctypes
 import pygame
 import numpy
@@ -44,6 +45,15 @@ void main()
    
    gl_Position = vec4(position.x, position.y, 0.0, 1.0);
    TexCoord = vec2(aTexCoord.x, aTexCoord.y);
+}
+"""
+
+fragment_shader_outerWheel = """
+#version 330
+
+void main()
+{
+	gl_FragColor = vec4(65.0f/255.0f,65.0f/255.0f,65.0f/255.0f, 1.0f);
 }
 """
 
@@ -107,6 +117,14 @@ void main()
 }
 """
 
+fragment_shader_properties = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(15.0f/255.0f,15.0f/255.0f,15.0f/255.0f,1.0f);
+}
+"""
+
 fragment_shader_white = """
 #version 330
 void main()
@@ -120,6 +138,20 @@ def fx(x):
 
 def fy(y):
 	return (1 - (2 - 2*y/600))
+
+rightWheel = []
+innerRight = []
+leftWheel = []
+innerLeft = []	
+inRightWheel = []
+inLeftWheel = []
+inInnerRight = []
+inInnerLeft = []
+
+properties = [100.0, 220.0, 0.0, 1.0,
+			100.0, 200.0, 0.0, 1.0,
+			520.0, 200.0, 0.0, 1.0,
+			510.0, 220.0, 0.0, 1.0]
 
 background = [-1.0, 1.0, 0.0, 1.0,
 			  1.0, 1.0, 0.0, 1.0,
@@ -188,11 +220,82 @@ vertices2 = numpy.array(vertices2, dtype=numpy.float32)
 def convert_coordinate():
 	global road, sidewalk, road_white, sidewalk_white, car, carFront
 	global window_1, window_2, window_3, window_4
+	global rightWheel, leftWheel, innerRight, innerLeft, inLeftWheel, inRightWheel, inInnerRight, inInnerLeft
 	global x_road1, x_road2
-
+	global properties
+	
 	#init white dashed road
 	x1 = x_road1
 	x2 = x_road2
+	
+	#Inner_InnerWheel
+	for i in range(100):    
+		cosine = 15 * cos(i*2*pi/32) + 380
+		sine = 15 * sin(i*2*pi/32) + 190
+		inInnerRight.append(fx(cosine))
+		inInnerRight.append(fy(sine))
+		inInnerRight.append(0.0)
+		inInnerRight.append(1.0)
+	
+	for i in range(100):    
+		cosine = 15 * cos(i*2*pi/32) + 150
+		sine = 15 * sin(i*2*pi/32) + 190
+		inInnerLeft.append(fx(cosine))
+		inInnerLeft.append(fy(sine))
+		inInnerLeft.append(0.0)
+		inInnerLeft.append(1.0)
+	
+	#Outer_InnerWheel
+	for i in range(100):    
+		cosine = 20 * cos(i*2*pi/32) + 380
+		sine = 20 * sin(i*2*pi/32) + 190
+		inRightWheel.append(fx(cosine))
+		inRightWheel.append(fy(sine))
+		inRightWheel.append(0.0)
+		inRightWheel.append(1.0)
+	
+	for i in range(100):    
+		cosine = 20 * cos(i*2*pi/32) + 150
+		sine = 20 * sin(i*2*pi/32) + 190
+		inLeftWheel.append(fx(cosine))
+		inLeftWheel.append(fy(sine))
+		inLeftWheel.append(0.0)
+		inLeftWheel.append(1.0)
+	
+	#Inner Wheel
+	for i in range(0, 100):
+		cosine = 30 * cos(i*2*pi/32) + 380
+		sine = 30 * sin(i*2*pi/32) + 190
+		innerRight.append(fx(cosine))
+		innerRight.append(fy(sine))
+		innerRight.append(0.0)
+		innerRight.append(1.0)
+		
+	for i in range(0, 100):
+		cosine = 30 * cos(i*2*pi/32) + 150
+		sine = 30 * sin(i*2*pi/32) + 190
+		innerLeft.append(fx(cosine))
+		innerLeft.append(fy(sine))
+		innerLeft.append(0.0)
+		innerLeft.append(1.0)
+	
+	#Outer Wheel
+	for i in range(0, 100):
+		cosine = 40 * cos(i*2*pi/32) + 380
+		sine = 40 * sin(i*2*pi/32) + 190
+		rightWheel.append(fx(cosine))
+		rightWheel.append(fy(sine))
+		rightWheel.append(0.0)
+		rightWheel.append(1.0)
+		
+	for i in range(0, 100):
+		cosine = 40 * cos(i*2*pi/32) + 150
+		sine = 40 * sin(i*2*pi/32) + 190
+		leftWheel.append(fx(cosine))
+		leftWheel.append(fy(sine))
+		leftWheel.append(0.0)
+		leftWheel.append(1.0)
+	
 	for i in range(0,10):
 		road_white.append(fx(x1))
 		road_white.append(fy(100))
@@ -241,7 +344,7 @@ def convert_coordinate():
 		x1 += 100
 		x2 += 100
 
-	print(road_white)
+	#print(road_white)
 	for i in range(0, len(road), 4):
 		road[i] = fx(road[i])
 		road[i+1] = fy(road[i+1])
@@ -256,7 +359,11 @@ def convert_coordinate():
 		carFront[i] = fx(carFront[i])
 		carFront[i+1] = fy(carFront[i+1])
 		
-	for i in range(0,len(window_1), 4):
+	for i in range(0, len(properties), 4):
+		properties[i] = fx(properties[i])
+		properties[i+1] = fy(properties[i+1])
+		
+	for i in range(0,len(window_1), 4):		
 		window_1[i] = fx(window_1[i])
 		window_1[i+1] = fy(window_1[i+1])
 		
@@ -269,6 +376,7 @@ def convert_coordinate():
 		window_4[i] = fx(window_4[i])
 		window_4[i+1] = fy(window_4[i+1])
 		
+	#print(properties)
 	sidewalk_white = numpy.array(sidewalk_white, dtype=numpy.float32)	
 	road_white = numpy.array(road_white, dtype=numpy.float32)
 	sidewalk = numpy.array(sidewalk, dtype=numpy.float32)
@@ -279,7 +387,15 @@ def convert_coordinate():
 	window_2= numpy.array(window_2, dtype=numpy.float32)
 	window_3= numpy.array(window_3, dtype=numpy.float32)
 	window_4= numpy.array(window_4, dtype=numpy.float32)
-	
+	rightWheel = numpy.array(rightWheel, dtype=numpy.float32)
+	leftWheel = numpy.array(leftWheel, dtype=numpy.float32)
+	innerLeft = numpy.array(innerLeft, dtype=numpy.float32)
+	innerRight = numpy.array(innerRight, dtype=numpy.float32)
+	inRightWheel = numpy.array(inRightWheel, dtype=numpy.float32)
+	inLeftWheel = numpy.array(inLeftWheel, dtype=numpy.float32)
+	inInnerRight = numpy.array(inInnerRight, dtype=numpy.float32)
+	inInnerLeft = numpy.array(inInnerLeft, dtype=numpy.float32)
+	properties = numpy.array(properties, dtype=numpy.float32)
 
 def create_object(shader, datas):
 	
@@ -319,8 +435,67 @@ def display(shader, vertex_array_object):
 	global plus
 
 	GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
-	GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
 	
+	#Inner_InnerWheel
+	GL.glUseProgram(shader[7])
+	GL.glBindVertexArray( vertex_array_object[18] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 18 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[7])
+	GL.glBindVertexArray( vertex_array_object[17] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 17 )
+	GL.glUseProgram(0)
+	
+	#Inner_OuterWheel
+	GL.glUseProgram(shader[6])
+	GL.glBindVertexArray( vertex_array_object[16] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 16 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[6])
+	GL.glBindVertexArray( vertex_array_object[15] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 15 )
+	GL.glUseProgram(0)
+	
+	#Inner Wheel
+	GL.glUseProgram(shader[7])
+	GL.glBindVertexArray( vertex_array_object[14] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 14 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[7])
+	GL.glBindVertexArray( vertex_array_object[13] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 13 )
+	GL.glUseProgram(0)
+	
+	# Wheel
+	GL.glUseProgram(shader[6])
+	GL.glBindVertexArray( vertex_array_object[12] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 11 )
+	GL.glUseProgram(0)
+	
+	GL.glUseProgram(shader[6])
+	GL.glBindVertexArray( vertex_array_object[11] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 100)
+	GL.glBindVertexArray( 11 )
+	GL.glUseProgram(0)
+	
+	# Properties
+	GL.glUseProgram(shader[8])
+	GL.glBindVertexArray( vertex_array_object[19] )
+	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+	GL.glBindVertexArray( 19 )
+	GL.glUseProgram(0)
+	
+	# Car
 	GL.glUseProgram(shader[5])
 	GL.glBindVertexArray( vertex_array_object[10] )
 	GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
@@ -350,12 +525,13 @@ def display(shader, vertex_array_object):
 	GL.glDrawArrays(GL.GL_POLYGON, 0, 5)
 	GL.glBindVertexArray( 6 )
 	GL.glUseProgram(0)
-	#car
+	
 	GL.glUseProgram(shader[4])
 	GL.glBindVertexArray( vertex_array_object[5] )
 	GL.glDrawArrays(GL.GL_POLYGON, 0, 5)
 	GL.glBindVertexArray( 5 )
 	GL.glUseProgram(0)
+	
 	# sidewalk_white
 	GL.glUseProgram(shader[3])
 
@@ -469,6 +645,21 @@ def main():
 		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
 		OpenGL.GL.shaders.compileShader(fragment_shader_window, GL.GL_FRAGMENT_SHADER)
 	)
+	
+	shader_outerWheel = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_outerWheel, GL.GL_FRAGMENT_SHADER)
+	)
+	
+	shader_innerWheel = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_white, GL.GL_FRAGMENT_SHADER)
+	)
+	
+	shader_properties = OpenGL.GL.shaders.compileProgram(
+		OpenGL.GL.shaders.compileShader(vertex_shader, GL.GL_VERTEX_SHADER),
+		OpenGL.GL.shaders.compileShader(fragment_shader_properties, GL.GL_FRAGMENT_SHADER)
+	)
 
 	shaders = []
 	shaders.append(shader_road)
@@ -477,12 +668,9 @@ def main():
 	shaders.append(shader_road_white)
 	shaders.append(shader_car)
 	shaders.append(shader_window)
-	
-	shaders.append(shader_window)
-	
-	shaders.append(shader_window)
-	
-	shaders.append(shader_window)
+	shaders.append(shader_outerWheel)
+	shaders.append(shader_innerWheel)
+	shaders.append(shader_properties)
 
 	clock = pygame.time.Clock()
 	vertex_array_object = []
@@ -497,10 +685,17 @@ def main():
 	vertex_array_object.append(create_object(shader_window, window_2))
 	vertex_array_object.append(create_object(shader_window, window_3))
 	vertex_array_object.append(create_object(shader_window, window_4))
+	vertex_array_object.append(create_object(shader_outerWheel,	rightWheel))
+	vertex_array_object.append(create_object(shader_outerWheel,	leftWheel))
+	vertex_array_object.append(create_object(shader_innerWheel,	innerRight))
+	vertex_array_object.append(create_object(shader_innerWheel,	innerLeft))
+	vertex_array_object.append(create_object(shader_outerWheel,	inRightWheel))
+	vertex_array_object.append(create_object(shader_outerWheel,	inLeftWheel))
+	vertex_array_object.append(create_object(shader_innerWheel,	inInnerRight))
+	vertex_array_object.append(create_object(shader_innerWheel,	inInnerLeft))
+	vertex_array_object.append(create_object(shader_properties,	properties))
 
 	while True:
-		
-
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return
