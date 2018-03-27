@@ -839,7 +839,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building7)
     transform_building7 -= (0.5/800)
 
-    if(transform_building7 <= (-fx(800)-0.2-200/800)):
+    if(transform_building7 <= (-2000/800)):
         transform_building7 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[28] )
@@ -854,7 +854,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building5)
     transform_building5 -= (0.5/800)
 
-    if(transform_building5 <= (-fx(500)-0.2-200/800)):
+    if(transform_building5 <= (-1400/800)):
         transform_building5 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[27] )
@@ -869,7 +869,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building6)
     transform_building6 -= (0.5/800)
 
-    if(transform_building6 <= (-fx(650)-0.2-200/800)):
+    if(transform_building6 <= (-1700/800)):
         transform_building6 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[26] )
@@ -884,7 +884,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building3)
     transform_building3 -= (0.5/800)
 
-    if(transform_building3 <= (-fx(400)-0.2-200/800)):
+    if(transform_building3 <= (-1200/800)):
         transform_building3 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[25] )
@@ -899,7 +899,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building4)
     transform_building4 -= (0.5/800)
 
-    if(transform_building4 <= (-fx(230)-0.2-200/800)):
+    if(transform_building4 <= (-860/800)):
         transform_building4 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[24] )
@@ -914,7 +914,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building2)
     transform_building2 -= (0.5/800)
 
-    if(transform_building2 <= (-fx(110)-0.2-200/800)):
+    if(transform_building2 <= (-620/800)):
         transform_building2 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[23] )
@@ -929,7 +929,7 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building1)
     transform_building1 -= (0.5/800)
 
-    if(transform_building1 <= (-fx(0)-0.2-200/800)):
+    if(transform_building1 <= (-400/800)):
         transform_building1 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[22] )
