@@ -28,6 +28,12 @@ x_building6 = 650
 x_building7 = 800
 
 transform_building1 = 0.0
+transform_building2 = 0.0
+transform_building3 = 0.0
+transform_building4 = 0.0
+transform_building5 = 0.0
+transform_building6 = 0.0
+transform_building7 = 0.0
 
 x_sidewalk1 = 0
 x_sidewalk2 = 50
@@ -183,6 +189,38 @@ void main()
 }
 """
 
+fragment_shader_building2 = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(0.51f, 0.57f, 0.65f, 1.0f);
+}
+"""
+
+fragment_shader_building3 = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(0.36f, 0.56f, 0.94f, 1.0f);
+}
+"""
+
+fragment_shader_building4 = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(0.72f, 0.62f, 0.94f, 1.0f);
+}
+"""
+
+fragment_shader_building5 = """
+#version 330
+void main()
+{
+   gl_FragColor = vec4(0.72f, 0.35f, 0.56f, 1.0f);
+}
+"""
+
 def fx(x):
     return (1 - (2 - 2*x/800))
 
@@ -224,6 +262,56 @@ building1 = [x_building1, 200.0, 0.0, 1.0,
 			x_building1+170.0, 500.0, 0.0, 1.0,
 			x_building1+200.0, 500.0, 0.0, 1.0,
 			x_building1+200.0, 200.0, 0.0, 1.0]
+
+building2 = [x_building2, 200.0, 0.0, 1.0,
+			x_building2, 510.0, 0.0, 1.0,
+			x_building2+160.0, 540.0, 0.0, 1.0,
+			x_building2+160.0, 200.0, 0.0, 1.0]
+
+building4 = [x_building4, 200.0, 0.0, 1.0,
+			x_building4, 480.0, 0.0, 1.0,
+			x_building4+35.0, 480.0, 0.0, 1.0,
+			x_building4+35.0, 510.0, 0.0, 1.0,
+			x_building4+65.0, 510.0, 0.0, 1.0,
+			x_building4+65.0, 540.0, 0.0, 1.0,
+			x_building4+95.0, 540.0, 0.0, 1.0,
+			x_building4+95.0, 570.0, 0.0, 1.0,
+			x_building4+105.0, 570.0, 0.0, 1.0,
+			x_building4+105.0, 540.0, 0.0, 1.0,
+			x_building4+135.0, 540.0, 0.0, 1.0,
+			x_building4+135.0, 510.0, 0.0, 1.0,
+			x_building4+165.0, 510.0, 0.0, 1.0,
+			x_building4+165.0, 480.0, 0.0, 1.0,
+			x_building4+200.0, 480.0, 0.0, 1.0,
+			x_building4+200.0, 200.0, 0.0, 1.0]
+
+building3 = [x_building3, 200.0, 0.0, 1.0,
+			x_building3, 550.0, 0.0, 1.0,
+			x_building3+200.0, 550.0, 0.0, 1.0,
+			x_building3+200.0, 200.0, 0.0, 1.0]
+
+building6 = [x_building6, 200.0, 0.0, 1.0,
+			x_building6, 470.0, 0.0, 1.0,
+			x_building6+200.0, 430.0, 0.0, 1.0,
+			x_building6+200.0, 200.0, 0.0, 1.0]
+
+building5 = [x_building5, 200.0, 0.0, 1.0,
+			x_building5, 500.0, 0.0, 1.0,
+			x_building5+30.0, 500.0, 0.0, 1.0,
+			x_building5+30.0, 530.0, 0.0, 1.0,
+			x_building5+120.0, 530.0, 0.0, 1.0,
+			x_building5+120.0, 500.0, 0.0, 1.0,
+			x_building5+150.0, 500.0, 0.0, 1.0,
+			x_building5+150.0, 200.0, 0.0, 1.0]
+
+building7 = [x_building7, 200.0, 0.0, 1.0,
+			x_building7, 480.0, 0.0, 1.0,
+			x_building7+50.0, 480.0, 0.0, 1.0,
+			x_building7+50.0, 570.0, 0.0, 1.0,
+			x_building7+60.0, 570.0, 0.0, 1.0,
+			x_building7+60.0, 480.0, 0.0, 1.0,
+			x_building7+200.0, 480.0, 0.0, 1.0,
+			x_building7+200.0, 200.0, 0.0, 1.0]
 
 car = [80.0, 330.0, 0.0, 1.0,
         340.0, 330.0,  0.0, 1.0,
@@ -301,7 +389,7 @@ vertices2 = numpy.array(vertices2, dtype=numpy.float32)
 
 def convert_coordinate():
     global road, sidewalk, road_white, sidewalk_white, car, carFront, carFootStep
-    global building1
+    global building1, building2, building3, building4, building5, building6, building7
     global window_1, window_2, window_3, window_4
     global rightWheel, leftWheel, innerRight, innerLeft, inLeftWheel, inRightWheel, inInnerRight, inInnerLeft
     global spokes, properties
@@ -431,6 +519,26 @@ def convert_coordinate():
         building1[i] = fx(building1[i])
         building1[i+1] = fy(building1[i+1])
 
+        building4[i] = fx(building4[i])
+        building4[i+1] = fy(building4[i+1])
+
+    for i in range(0, len(building2), 4):
+        building2[i] = fx(building2[i])
+        building2[i+1] = fy(building2[i+1])
+
+        building3[i] = fx(building3[i])
+        building3[i+1] = fy(building3[i+1])
+
+        building6[i] = fx(building6[i])
+        building6[i+1] = fy(building6[i+1])
+
+    for i in range(0, len(building5), 4):
+        building5[i] = fx(building5[i])
+        building5[i+1] = fy(building5[i+1])
+
+        building7[i] = fx(building7[i])
+        building7[i+1] = fy(building7[i+1])
+
     for i in range(0, len(road), 4):
         road[i] = fx(road[i])
         road[i+1] = fy(road[i+1])
@@ -467,6 +575,12 @@ def convert_coordinate():
         spokes[i+1] = spokes[i+1]/600.0
 
     building1 = numpy.array(building1, dtype=numpy.float32)
+    building2 = numpy.array(building2, dtype=numpy.float32)
+    building4 = numpy.array(building4, dtype=numpy.float32)
+    building3 = numpy.array(building3, dtype=numpy.float32)
+    building6 = numpy.array(building6, dtype=numpy.float32)
+    building5 = numpy.array(building5, dtype=numpy.float32)
+    building7 = numpy.array(building7, dtype=numpy.float32)
     sidewalk_white = numpy.array(sidewalk_white, dtype=numpy.float32)    
     road_white = numpy.array(road_white, dtype=numpy.float32)
     sidewalk = numpy.array(sidewalk, dtype=numpy.float32)
@@ -521,7 +635,9 @@ def create_object(shader, datas):
     
 def display(shader, vertex_array_object):
     global transform_road, transform_sidewalk, wheel_rotation_deg
-    global transform_building1
+    global transform_building1, transform_building2, transform_building3
+    global transform_building4, transform_building5, transform_building6
+    global transform_building7
     global dR, dG, dB
     global skyColorR, skyColorG, skyColorB
     global skyR, skyG, skyB
@@ -712,8 +828,98 @@ def display(shader, vertex_array_object):
     # sidewalk
     GL.glUseProgram(shader[2])
     GL.glBindVertexArray( vertex_array_object[2] )
-    GL.glDrawArrays(GL.GL_POLYGON, 0, 16)
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
     GL.glBindVertexArray( 2 )
+    GL.glUseProgram(0)
+
+    #building-7
+    GL.glUseProgram(shader[15])
+
+    transLoc = GL.glGetUniformLocation(shader[11], "transform")
+    GL.glUniform1f(transLoc, transform_building7)
+    transform_building7 -= (0.5/800)
+
+    if(transform_building7 <= (-fx(800)-0.2-200/800)):
+        transform_building7 = 2.0
+
+    GL.glBindVertexArray( vertex_array_object[28] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 8)
+    GL.glBindVertexArray( 0 )
+    GL.glUseProgram(0)
+
+    #building-5
+    GL.glUseProgram(shader[11])
+
+    transLoc = GL.glGetUniformLocation(shader[11], "transform")
+    GL.glUniform1f(transLoc, transform_building5)
+    transform_building5 -= (0.5/800)
+
+    if(transform_building5 <= (-fx(500)-0.2-200/800)):
+        transform_building5 = 2.0
+
+    GL.glBindVertexArray( vertex_array_object[27] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 8)
+    GL.glBindVertexArray( 0 )
+    GL.glUseProgram(0)
+
+    #building-6
+    GL.glUseProgram(shader[12])
+
+    transLoc = GL.glGetUniformLocation(shader[12], "transform")
+    GL.glUniform1f(transLoc, transform_building6)
+    transform_building6 -= (0.5/800)
+
+    if(transform_building6 <= (-fx(650)-0.2-200/800)):
+        transform_building6 = 2.0
+
+    GL.glBindVertexArray( vertex_array_object[26] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+    GL.glBindVertexArray( 0 )
+    GL.glUseProgram(0)
+
+    #building-3
+    GL.glUseProgram(shader[13])
+
+    transLoc = GL.glGetUniformLocation(shader[13], "transform")
+    GL.glUniform1f(transLoc, transform_building3)
+    transform_building3 -= (0.5/800)
+
+    if(transform_building3 <= (-fx(400)-0.2-200/800)):
+        transform_building3 = 2.0
+
+    GL.glBindVertexArray( vertex_array_object[25] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+    GL.glBindVertexArray( 0 )
+    GL.glUseProgram(0)
+
+    #building-4
+    GL.glUseProgram(shader[14])
+
+    transLoc = GL.glGetUniformLocation(shader[14], "transform")
+    GL.glUniform1f(transLoc, transform_building4)
+    transform_building4 -= (0.5/800)
+
+    if(transform_building4 <= (-fx(230)-0.2-200/800)):
+        transform_building4 = 2.0
+
+    GL.glBindVertexArray( vertex_array_object[24] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 16)
+    GL.glBindVertexArray( 0 )
+    GL.glUseProgram(0)
+
+	#building-2
+    GL.glUseProgram(shader[12])
+
+    transLoc = GL.glGetUniformLocation(shader[12], "transform")
+    GL.glUniform1f(transLoc, transform_building2)
+    transform_building2 -= (0.5/800)
+
+    if(transform_building2 <= (-fx(110)-0.2-200/800)):
+        transform_building2 = 2.0
+
+    GL.glBindVertexArray( vertex_array_object[23] )
+    GL.glDrawArrays(GL.GL_POLYGON, 0, 4)
+    GL.glBindVertexArray( 0 )
     GL.glUseProgram(0)
 
     #building-1
@@ -723,8 +929,8 @@ def display(shader, vertex_array_object):
     GL.glUniform1f(transLoc, transform_building1)
     transform_building1 -= (0.5/800)
 
-    if(transform_building1 <= (-1.0-200/800)):
-        transform_building1 = 0.0
+    if(transform_building1 <= (-fx(0)-0.2-200/800)):
+        transform_building1 = 2.0
 
     GL.glBindVertexArray( vertex_array_object[22] )
     GL.glDrawArrays(GL.GL_POLYGON, 0, 16)
@@ -831,6 +1037,26 @@ def main():
         OpenGL.GL.shaders.compileShader(fragment_shader_building1, GL.GL_FRAGMENT_SHADER)
     )
 
+    shader_building2 = OpenGL.GL.shaders.compileProgram(
+        OpenGL.GL.shaders.compileShader(vertex_shader_road, GL.GL_VERTEX_SHADER),
+        OpenGL.GL.shaders.compileShader(fragment_shader_building2, GL.GL_FRAGMENT_SHADER)
+    )
+
+    shader_building3 = OpenGL.GL.shaders.compileProgram(
+        OpenGL.GL.shaders.compileShader(vertex_shader_road, GL.GL_VERTEX_SHADER),
+        OpenGL.GL.shaders.compileShader(fragment_shader_building3, GL.GL_FRAGMENT_SHADER)
+    )
+
+    shader_building4 = OpenGL.GL.shaders.compileProgram(
+        OpenGL.GL.shaders.compileShader(vertex_shader_road, GL.GL_VERTEX_SHADER),
+        OpenGL.GL.shaders.compileShader(fragment_shader_building4, GL.GL_FRAGMENT_SHADER)
+    )
+
+    shader_building5 = OpenGL.GL.shaders.compileProgram(
+        OpenGL.GL.shaders.compileShader(vertex_shader_road, GL.GL_VERTEX_SHADER),
+        OpenGL.GL.shaders.compileShader(fragment_shader_building5, GL.GL_FRAGMENT_SHADER)
+    )
+
     shaders = []
     shaders.append(shader_road)
     shaders.append(shader_sky)
@@ -844,6 +1070,10 @@ def main():
     shaders.append(shader_properties)
     shaders.append(shader_spokes)
     shaders.append(shader_building1)
+    shaders.append(shader_building2)
+    shaders.append(shader_building3)
+    shaders.append(shader_building4)
+    shaders.append(shader_building5)
 
     clock = pygame.time.Clock()
     vertex_array_object = []
@@ -870,6 +1100,12 @@ def main():
     vertex_array_object.append(create_object(shader_properties,    properties))
     vertex_array_object.append(create_object(shader_spokes, spokes))
     vertex_array_object.append(create_object(shader_building1, building1))
+    vertex_array_object.append(create_object(shader_building2, building2))
+    vertex_array_object.append(create_object(shader_building4, building4))
+    vertex_array_object.append(create_object(shader_building3, building3))
+    vertex_array_object.append(create_object(shader_building2, building6))
+    vertex_array_object.append(create_object(shader_building1, building5))
+    vertex_array_object.append(create_object(shader_building5, building7))
 
     while True:
         for event in pygame.event.get():
